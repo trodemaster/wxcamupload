@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	//"reflect"
 )
 
 func main() {
@@ -48,9 +49,15 @@ func main() {
 
 	// boolean flags
 	// name of flag, default, description
-	wxcamuploadDebug = flag.Bool("debug", wxcamuploadDebug, "show debug output")
+	// cant set wxcamuploadDebug directly for some reason? seems like Parse needs to happen first.
+	wxcamuploadDebugFlag := flag.Bool("debug", wxcamuploadDebug, "show debug output")
 
 	flag.Parse()
+
+	// read wxcamuploadDebugFlag and then set wxcamuploadDebug
+	if *wxcamuploadDebugFlag == true {
+		wxcamuploadDebug = true
+	}
 
 	// download the image from camera
 	snap, err := http.Get(camUrl)
