@@ -89,32 +89,32 @@ func main() {
 		fmt.Println("wunderground user: ", wundergroundUser)
 		fmt.Println("wunderground pass: ", wundergroundPass)
 
-		// ftp upload
-		var ftp *goftp.FTP
+	}
 
-		// For debug messages: goftp.ConnectDbg("ftp.server.com:21")
-		if ftp, err = goftp.ConnectDbg(wundergroundUrl); err != nil {
-			panic(err)
-		}
+	// ftp upload
+	var ftp *goftp.FTP
 
-		defer ftp.Close()
-		//fmt.Println("Successfully connected to", server)
+	// For debug messages: goftp.ConnectDbg("ftp.server.com:21")
+	if ftp, err = goftp.ConnectDbg(wundergroundUrl); err != nil {
+		panic(err)
+	}
 
-		// Username / password authentication
-		if err = ftp.Login(wundergroundUser, wundergroundPass); err != nil {
-			panic(err)
-		}
+	defer ftp.Close()
+	//fmt.Println("Successfully connected to", server)
 
-		// Upload a file
-		var file *os.File
-		if file, err = os.Open("/files/go/src/github.com/trodemaster/wxcamupload/image.jpg"); err != nil {
-			panic(err)
-		}
+	// Username / password authentication
+	if err = ftp.Login(wundergroundUser, wundergroundPass); err != nil {
+		panic(err)
+	}
 
-		if err := ftp.Stor("/image.jpg", file); err != nil {
-			panic(err)
-		}
+	// Upload a file
+	var file *os.File
+	if file, err = os.Open("/files/go/src/github.com/trodemaster/wxcamupload/image.jpg"); err != nil {
+		panic(err)
+	}
 
+	if err := ftp.Stor("/image.jpg", file); err != nil {
+		panic(err)
 	}
 
 }
