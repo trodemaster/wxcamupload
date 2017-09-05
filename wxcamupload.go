@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	//"strings"
 	//"reflect"
 )
 
@@ -15,7 +16,7 @@ func main() {
 
 	// Setup defaults
 	camUrl := "http://192.150.23.219/snap.jpeg"
-	wundergroundUrl := "webcam.wunderground.com"
+	wundergroundUrl := "webcam.wunderground.com:21"
 	wundergroundUser := "username"
 	wundergroundPass := "password"
 	var wxcamuploadDebug bool = false
@@ -92,7 +93,7 @@ func main() {
 		var ftp *goftp.FTP
 
 		// For debug messages: goftp.ConnectDbg("ftp.server.com:21")
-		if ftp, err = goftp.ConnectDbg("webcam.wunderground.com:21"); err != nil {
+		if ftp, err = goftp.ConnectDbg(wundergroundUrl); err != nil {
 			panic(err)
 		}
 
