@@ -9,7 +9,9 @@ import (
 	"net/http"
 	"os"
 	//"strings"
-	//"reflect"
+	"image"
+	_ "image/jpeg"
+	"reflect"
 )
 
 func main() {
@@ -66,6 +68,32 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("snap type:", reflect.TypeOf(snap))
+	fmt.Println("snap.body type:", reflect.TypeOf(snap.Body))
+
+	// attempt conversion
+	img, _, err := image.Decode(snap.Body)
+	if err != nil {
+		log.Fatal("Cannot decode image:", err)
+	}
+	fmt.Println("img type:", reflect.TypeOf(img))
+
+	// the original turtle image is 2256 x 1504
+	// crop to just the upper left corner
+
+	cImg, err := cutter.Crop(img, cutter.Config{
+		Height:  750,               // height in pixel or Y ratio(see Ratio Option below)
+		Width:   1100,              // width in pixel or X ratio
+		Mode:    cutter.TopLeft,    // Accepted Mode: TopLeft, Centered
+		Anchor:  image.Point{0, 0}, // Position of the top left point
+		Options: 0,                 // Accepted Option: Ratio
+	})
+
+	if err != nil {
+		log.Fatal("Cannot crop image:", err)
+	}
+	fmt.Println("cImg dimension:", cImg.Bounds())
+	// Output: cImg dimension: (10,10)-(510,510)
 
 	// create a tempfile
 	tempfile, err := os.Create("image.jpg")
@@ -79,6 +107,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Println("filebuffer type:", reflect.TypeOf(filebuffer))
 
 	// write debug output
 	if wxcamuploadDebug {
