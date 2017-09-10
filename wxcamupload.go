@@ -119,5 +119,4 @@ func main() {
 		fmt.Println("wunderground user: ", wundergroundUser)
 		fmt.Println("wunderground pass: ", wundergroundPass)
 	}
-
 }
