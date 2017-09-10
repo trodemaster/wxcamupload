@@ -11,13 +11,11 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"reflect"
 )
 
 func main() {
-
 	// Setup defaults
-	camUrl := "http://192.150.23.219/snap.jpeg"
+	camUrl := "http://10.0.0.01/snap.jpeg"
 	wundergroundUrl := "webcam.wunderground.com:21"
 	wundergroundUser := "username"
 	wundergroundPass := "password"
@@ -68,19 +66,16 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("snap type:", reflect.TypeOf(snap))
-	fmt.Println("snap.body type:", reflect.TypeOf(snap.Body))
 
 	// attempt conversion
 	img, _, err := image.Decode(snap.Body)
 	if err != nil {
 		log.Fatal("Cannot decode image:", err)
 	}
-	fmt.Println("img type:", reflect.TypeOf(img))
 
 	// crop to just the upper left corner
 	cImg, err := cutter.Crop(img, cutter.Config{
-		Height:  800,               // height in pixel or Y ratio(see Ratio Option below)
+		Height:  830,               // height in pixel or Y ratio(see Ratio Option below)
 		Width:   1920,              // width in pixel or X ratio
 		Mode:    cutter.TopLeft,    // Accepted Mode: TopLeft, Centered
 		Anchor:  image.Point{0, 0}, // Position of the top left point
@@ -90,7 +85,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Cannot crop image:", err)
 	}
-	fmt.Println("cImg dimension:", cImg.Bounds())
 
 	// convert from image.Image to []byte
 	buf := &bytes.Buffer{}
@@ -98,20 +92,11 @@ func main() {
 		log.Fatalf("Error converting: %s\n", err)
 	}
 
-	// write debug output
-	if wxcamuploadDebug {
-		fmt.Println("Source Url: ", camUrl)
-		fmt.Println("wunderground Url: ", wundergroundUrl)
-		fmt.Println("wunderground user: ", wundergroundUser)
-		fmt.Println("wunderground pass: ", wundergroundPass)
-
-	}
-
 	// ftp upload
 	var ftp *goftp.FTP
 
 	// For debug messages: goftp.ConnectDbg("ftp.server.com:21")
-	if ftp, err = goftp.ConnectDbg(wundergroundUrl); err != nil {
+	if ftp, err = goftp.Connect(wundergroundUrl); err != nil {
 		panic(err)
 	}
 
@@ -122,8 +107,17 @@ func main() {
 		panic(err)
 	}
 
-	// Upload a file
+	// Upload the cropped file
 	if err := ftp.Stor("/image.jpg", buf); err != nil {
 		panic(err)
 	}
+
+	// write debug output
+	if wxcamuploadDebug {
+		fmt.Println("Source Url: ", camUrl)
+		fmt.Println("wunderground Url: ", wundergroundUrl)
+		fmt.Println("wunderground user: ", wundergroundUser)
+		fmt.Println("wunderground pass: ", wundergroundPass)
+	}
+
 }
