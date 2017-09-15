@@ -97,7 +97,7 @@ func main() {
 
 	// For debug messages: goftp.ConnectDbg("ftp.server.com:21")
 	if ftp, err = goftp.ConnectDbg(wundergroundUrl); err != nil {
-//		ftp.Close()
+		//		ftp.Close()
 		panic(err)
 	}
 
@@ -109,7 +109,6 @@ func main() {
 	}()
 
 	// Username / password authentication
-<<<<<<< HEAD
 	counter := 0
 	max := 9
 	for counter < max {
@@ -124,11 +123,6 @@ func main() {
 		if counter == max {
 			break
 		}
-=======
-	if err = ftp.Login(wundergroundUser, wundergroundPass); err != nil {
-		//ftp.Close()
-		panic(err)
->>>>>>> d0f55da05a3ad7e657d58845c24cac0c7e157e44
 	}
 
 	// Upload the cropped file
@@ -136,7 +130,7 @@ func main() {
 		panic(err)
 	}
 
-//	ftp.Quit()
+	//	ftp.Quit()
 	if err != nil {
 		log.Fatal("FTP session quit failed: ", err)
 	}
