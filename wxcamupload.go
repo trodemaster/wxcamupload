@@ -96,7 +96,8 @@ func main() {
 	var ftp *goftp.FTP
 
 	// For debug messages: goftp.ConnectDbg("ftp.server.com:21")
-	if ftp, err = goftp.Connect(wundergroundUrl); err != nil {
+	if ftp, err = goftp.ConnectDbg(wundergroundUrl); err != nil {
+//		ftp.Close()
 		panic(err)
 	}
 
@@ -104,12 +105,18 @@ func main() {
 
 	// Username / password authentication
 	if err = ftp.Login(wundergroundUser, wundergroundPass); err != nil {
+		//ftp.Close()
 		panic(err)
 	}
 
 	// Upload the cropped file
 	if err := ftp.Stor("/image.jpg", buf); err != nil {
 		panic(err)
+	}
+
+//	ftp.Quit()
+	if err != nil {
+		log.Fatal("FTP session quit failed: ", err)
 	}
 
 	// write debug output
