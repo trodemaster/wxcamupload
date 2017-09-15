@@ -101,10 +101,27 @@ func main() {
 	}
 
 	defer ftp.Close()
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered in f", r)
+		}
+	}()
 
 	// Username / password authentication
-	if err = ftp.Login(wundergroundUser, wundergroundPass); err != nil {
-		panic(err)
+	counter := 0
+	max := 9
+	for counter < max {
+		fmt.Printf("Counter is: %v\n", counter)
+		if err = ftp.Login(wundergroundUser, wundergroundPass); err != nil {
+			// panic(err)
+			fmt.Printf("Blake's code erred: %s", err)
+		} else {
+			break
+		}
+		counter++
+		if counter == max {
+			break
+		}
 	}
 
 	// Upload the cropped file
